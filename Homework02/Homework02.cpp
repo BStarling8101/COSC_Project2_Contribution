@@ -1,6 +1,8 @@
 // Homework02.cpp : Defines the entry point for the console application.
 //
 
+// success??
+
 #include "stdafx.h" //Figured it out, probably
 
 #include <iostream> //
