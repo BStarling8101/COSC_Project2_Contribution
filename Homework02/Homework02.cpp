@@ -1,51 +1,130 @@
 // Homework02.cpp : Defines the entry point for the console application.
 //
 
-// success??
-
 #include "stdafx.h" //Figured it out, probably
 
 #include <iostream> //
 #include <string>	//are these even necessary, then
 
-
 using namespace std;
 
+// Declare functions prior to use
+string get_class_type(float contribution);
+bool validate_phone_number(char phone_number[]);
 
-/*
-\	Method for getting the contribution class type for certain contribution amount
-\		contribution must be between 500 and 20,000 else it asks the user to input
-\		the number again.
-\
-*/
-string get_class_type(float contribution, string class_names[]) {
+int main()
+{
+	//	OBJ 1- Get NUMBER_OF_CONTRIBUTORS
+	int number_of_contributors;
+	cout << "Enter total number of contributors: ";
+	cin >> number_of_contributors;
+
+	/*	OBJ 2- Create array MEMBER_ARRAY of structures Member and length NUMBER_OF_CONTRIBUTORS
+		OBJ 3- Structure Member details 
+	*/
+
+	struct Member {
+		string name;
+		float contribution;
+		char phone_number[10];
+		string class_name;
+	};
+
+	Member* member_array = new Member[number_of_contributors];
+	
+	/*	OBJ 4- foreach CONTRIBUTOR in CONTRIBUTOR_LIST,
+		cin >> name, amount, phone
+		class is derived from amount :
+		if > 10000 = platinum
+		else if 5001 to 10000 = diamond
+		else if 1001 to 5000 = gold
+		else 500 to 1000 = silver
+	*/
+
+	for (int i = 0; i<number_of_contributors; i++) {
+		
+		Member m;
+
+		cout << "Enter first name only (no spaces): ";
+		cin >> m.name;
+
+		/* OBJ 5- check for valid Amount input.
+		Condition : Amount >= 500 AND Amount <= 20000.
+		If true, move on
+		If false, cout error, loop until User inputs valid one
+		*/
+		do {
+			cout << "Enter contribution in dollars: $";
+			cin >> m.contribution;
+
+			m.class_name = get_class_type(m.contribution);
+
+		} while (m.class_name == "-1");
+
+		/* OBJ 6- check for valid Telephone input.
+		Condition : Telephone must be of length 10, only contain digits
+		If true, move on
+		If false, cout error, loop until User inputs valid one
+		*/
+		bool is_valid_phone;
+
+		do
+		{
+			cout << "Enter phone number: ";
+			cin >> m.phone_number;
+
+			is_valid_phone = validate_phone_number(m.phone_number);
+		} while (!is_valid_phone);
+
+		member_array[i] = m;
+	}
+
+
+	// OBJ 7- By decreasing class, output details of each CONTRIBUTOR in CONTRIBUTOR LIST
+	// OBJ 8- Stream output to text file Charity.txt
+
+	// output this to 'Charity.txt' as well as console
+	// if you can, print by 'member class' Platinum, Diamond, Gold, Silver
+	/*cout << sizeof(member_array) << endl;
+	for (int i = 0; i<sizeof(member_array); i++) {
+		cout << "Name:\t" << member_array[i].name;
+		cout << "Phone Number:\t" << member_array[i].phone_number;
+		cout << "Contribution:\t" << member_array[i].contribution;
+		cout << "Class Type:\t" << member_array[i].class_type;
+	}
+	*/
+
+	return 0;
+}
+
+string get_class_type(float contribution) {
 
 	if (contribution >= 500 && contribution <= 1000)
 	{
-		return class_names[3];
+		return "Silver";
 	}
 	else if (contribution > 1000 && contribution <= 5000)
 	{
-		return class_names[2];
+		return "Gold";
 	}
 	else if (contribution > 5000 && contribution <= 10000)
 	{
-		return class_names[1];
+		return "Diamond";
 	}
 	else if (contribution > 10000 && contribution <= 20000)
 	{
-		return class_names[0];
+		return "Platinum";
 	}
 	else if (contribution > 20000)
 	{
 		cout << "Error, value must be below $20000" << endl;
 	}
-	else
+	else if (contribution < 500)
 	{
 		cout << "Error, value must be above $500" << endl;
 	}
 
-	return "invalid";
+	return "-1";
 }
 
 bool validate_phone_number(char phone_number[]) {
@@ -59,82 +138,4 @@ bool validate_phone_number(char phone_number[]) {
 		return false;
 	}
 
-}
-
-int main()
-{
-	/*
-	\	Here is what we will be using for the rest of the program,
-	\		these will not change.
-	\	'Member' struct and contributor class names
-	*/
-	string class_names[4] = { "Platinum", "Diamond", "Gold", "Silver" };
-	struct Member {
-		string name;
-		char phone_number[10];
-		float contribution;
-		string class_type;
-	};
-
-	/*
-	\	Getting the number of contributors from user
-	*/
-	int number_of_contributors;
-	cout << "Enter total number of contributors: ";
-	cin >> number_of_contributors;
-
-	/*
-	\	Creating a dynamic array of 'Member' structs.
-	\	Declaring temp variables for the use of looping for each contributor
-	\
-	*/
-	Member* member_array = new Member[];
-
-	string store_name;
-	char store_phone_number[10];
-	float store_contribution;
-	string store_class_type;
-	bool is_valid;
-
-	for (int i = 0; i<number_of_contributors; i++) {
-
-		cout << "Enter first name only (no spaces): ";
-		cin >> store_name;
-
-		do
-		{
-			cout << "Enter phone number: ";
-			cin >> store_phone_number;
-
-			is_valid = validate_phone_number(store_phone_number);
-		} while (!is_valid);
-
-
-		do {
-			cout << "Enter contribution in dollars: $";
-			cin >> store_contribution;
-
-			store_class_type = get_class_type(store_contribution, class_names);
-		} while (store_class_type == "invalid");
-
-		Member m;
-		m.name = store_name;
-		strcpy(m.phone_number, store_phone_number);
-		m.contribution = store_contribution;
-		m.class_type = store_class_type;
-
-		//append to 'member_array'
-	}
-
-	// output this to 'Charity.txt' as well as console
-	// if you can, print by 'member class' Platinum, Diamond, Gold, Silver
-	cout << sizeof(member_array) << endl;
-	for (int i = 0; i<sizeof(member_array); i++) {
-		cout << "Name:\t" << member_array[i].name;
-		cout << "Phone Number:\t" << member_array[i].phone_number;
-		cout << "Contribution:\t" << member_array[i].contribution;
-		cout << "Class Type:\t" << member_array[i].class_type;
-	}
-
-	return 0;
 }
