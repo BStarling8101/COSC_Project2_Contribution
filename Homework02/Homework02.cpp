@@ -129,7 +129,19 @@ string get_class_type(float contribution) {
 
 bool validate_phone_number(char phone_number[]) {
 
-	if (strlen(phone_number) == 10)
+	bool is_correct_length = strlen(phone_number) == 10;
+	bool is_digits_only = true;
+
+	for (int i = 0; i < strlen(phone_number); i++)
+	{
+		if (!isdigit(phone_number[i]))
+		{
+			is_digits_only = false;
+			break;
+		}
+	}
+
+	if (is_correct_length && is_digits_only)
 	{
 		return true;
 	}
