@@ -3,8 +3,9 @@
 
 #include "stdafx.h" //Figured it out, probably
 
-#include <iostream> //
-#include <string>	//are these even necessary, then
+#include <ctype.h> // isDigit
+#include <iostream>
+#include <string>
 
 using namespace std;
 
